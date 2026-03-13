@@ -132,19 +132,23 @@ class FilteredImage {
         this.displayGreyscale();
     }
 
-    displayImage() {
-        const imageData = this.#imageDataHelper.getImageData();
-        if (!imageData) {
-            setTimeout(() => {
-                this.displayImage();
-            }, 1000);
-            return;
-        }
-        
+    #displayImage(imageData) {        
         this.#canvas.width = imageData.width;
         this.#canvas.height = imageData.height;
 
         this.#ctx.putImageData(imageData, 0, 0);
+    }
+
+    displayOriginal() {
+        const imageData = this.#imageDataHelper.getImageData();
+        if (!imageData) {
+            setTimeout(() => {
+                this.displayOriginal();
+            }, 1000);
+            return;
+        }
+        
+        this.#displayImage(imageData);
     }
     
     displayGreyscale() {
@@ -156,11 +160,7 @@ class FilteredImage {
             return;
         }
 
-        this.#canvas.width = imageData.width;
-        this.#canvas.height = imageData.height;
-
-        this.#ctx.putImageData(imageData, 0, 0);
-
+       this.#displayImage(imageData);
 
     }
 
@@ -174,10 +174,8 @@ class FilteredImage {
             return;
         }
 
-        this.#canvas.width = imageData.width;
-        this.#canvas.height = imageData.height;
+        this.#displayImage(imageData);
 
-        this.#ctx.putImageData(imageData, 0, 0);
     }
 
 
