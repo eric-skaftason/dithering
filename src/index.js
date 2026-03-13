@@ -78,7 +78,7 @@ class ImageDataHelper {
         return imageData;
     }
 
-    getImageData_BW(threshold_type = 128) {
+    getImageData_BW(threshold = 128) {
         const imageData = this.getImageData_lum();
 
         if (!imageData) return;
@@ -87,14 +87,31 @@ class ImageDataHelper {
         for (let i = 0; i < imageData.data.length; i += 4) {
             // Since RGB values for greyscale images are equal, the R value can be used as the chrominance value
             let chrominance = imageData.data[i];
-            let threshold = 128;
 
-            // Determine random threshold if applicable
-            if (threshold_type === 'rand') {
-                threshold = Math.floor(Math.random() * 256);
-            } else if (typeof threshold_type === 'number') {
-                threshold = threshold_type
-            }
+            chrominance >= threshold ? chrominance = 255 : chrominance = 0;
+            
+            // Set the r, g, b values to the avg - chrominance
+            imageData.data[i] = chrominance;
+            imageData.data[i + 1] = chrominance;
+            imageData.data[i + 2] = chrominance;
+        }
+
+        return imageData;
+    }
+
+    getImageData_dithered(min, max) {
+        const imageData = this.getImageData_lum();
+
+        const spread = max - min;
+
+        if (!imageData) return;
+
+        // Iterate over each pixel
+        for (let i = 0; i < imageData.data.length; i += 4) {
+            // Since RGB values for greyscale images are equal, the R value can be used as the chrominance value
+            let chrominance = imageData.data[i];
+
+            const threshold = min + Math.floor(Math.random() * (spread + 1));
 
             chrominance >= threshold ? chrominance = 255 : chrominance = 0;
             
@@ -178,6 +195,18 @@ class FilteredImage {
 
     }
 
+    displayDithered_rand(min = 80, max = 180) {
+        const imageData = this.#imageDataHelper.getImageData_dithered(min, max);
+        if (!imageData) {
+            setTimeout(() => {
+                this.displayDithered_rand(min, max);
+            }, 1000);
+            return;
+        }
+
+        this.#displayImage(imageData);
+    }
+
 
 
 }
@@ -185,4 +214,4 @@ class FilteredImage {
 
 // const img123 = new FilteredImage('../images/browser-gb45d4bd06_640.png');
 const img123 = new FilteredImage('../images2/DSC02276a.jpg');
-img123.displayBW('rand');
+img123.displayDithered_rand();
