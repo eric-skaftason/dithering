@@ -30,12 +30,20 @@ class ImageDataHelper {
     }
 
     getImageData() {
-        return this.#imageData;
+        return structuredClone(this.#imageData);
     }
 
     getPixelData_RGBA(x, y) {
         // data is a Uint8ClampedArray: [R, G, B, A, R, G, B, A, ...]
+
+        const pixelStartIndex = (y * this.#imageData.data.width + x) * 4;
         
+        return [
+            this.#imageData[pixelStartIndex],
+            this.#imageData[pixelStartIndex + 1],
+            this.#imageData[pixelStartIndex + 2],
+            this.#imageData[pixelStartIndex + 3]
+        ];
     }
 
     getPixelData_lum(x, y) {
@@ -43,6 +51,31 @@ class ImageDataHelper {
         const luminance = (rgba[0] + rgba[1] + rgba[2]) / 3;
 
         return [luminance];
+    }
+
+    getImageData_lum() {
+        const imageData = this.getImageData();
+
+        if (!imageData) return;
+
+        // Iterate over each pixel
+        for (let i = 0; i < imageData.data.length; i += 4) {
+            // Iterate over [r, g, b], but skip [a] for each pixel
+            let sum = 0;
+
+            for (let j = 0; j < 3; j++) {
+                sum += imageData.data[i + j];
+            }
+
+            const avg = Math.round(sum / 3);
+            
+            // Set the r, g, b values to the avg - chrominance
+            imageData.data[i] = avg;
+            imageData.data[i + 1] = avg;
+            imageData.data[i + 2] = avg;
+        }
+
+        return imageData;
     }
 }
 
@@ -66,20 +99,39 @@ class FilteredImage {
         document.body.append(this.#canvas);
 
         // Render image
-        setTimeout(() => {
-            this.displayImage();
-        }, 1000);
+        this.displayGreyscale();
     }
 
     displayImage() {
         const imageData = this.#imageDataHelper.getImageData();
+        if (!imageData) {
+            setTimeout(() => {
+                this.displayImage();
+            }, 1000);
+            return;
+        }
         
-        this.#ctx.putImageData(imageData, 0, 0);
+        this.#canvas.width = imageData.width;
+        this.#canvas.height = imageData.height;
 
+        this.#ctx.putImageData(imageData, 0, 0);
     }
     
     displayGreyscale() {
-        
+        const imageData = this.#imageDataHelper.getImageData_lum();
+        if (!imageData) {
+            setTimeout(() => {
+                this.displayGreyscale();
+            }, 1000);
+            return;
+        }
+
+        this.#canvas.width = imageData.width;
+        this.#canvas.height = imageData.height;
+
+        this.#ctx.putImageData(imageData, 0, 0);
+
+
     }
 
     // black and white
