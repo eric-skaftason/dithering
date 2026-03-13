@@ -99,6 +99,7 @@ class ImageDataHelper {
         return imageData;
     }
 
+    // Random dithering
     getImageData_dithered(min, max) {
         const imageData = this.getImageData_lum();
 
@@ -123,6 +124,8 @@ class ImageDataHelper {
 
         return imageData;
     }
+
+    // One-Dimensional Error Diffusion Dithering
 
 }
 
@@ -208,10 +211,12 @@ class FilteredImage {
     }
 
 
+    
 
 }
 
 
 // const img123 = new FilteredImage('../images/browser-gb45d4bd06_640.png');
+
 const img123 = new FilteredImage('../images2/DSC02276a.jpg');
-img123.displayDithered_rand();
+img123.displayDithered_rand(80, 180);
