@@ -77,6 +77,29 @@ class ImageDataHelper {
 
         return imageData;
     }
+
+    getImageData_BW(threshold = 128) {
+        const imageData = this.getImageData_lum();
+
+        if (!imageData) return;
+
+        // Iterate over each pixel
+        for (let i = 0; i < imageData.data.length; i += 4) {
+            // Since RGB values for greyscale images are equal, the R value can be used as the chrominance value
+
+            let chrominance = imageData.data[i];
+
+            chrominance >= threshold ? chrominance = 255 : chrominance = 0;
+            
+            // Set the r, g, b values to the avg - chrominance
+            imageData.data[i] = chrominance;
+            imageData.data[i + 1] = chrominance;
+            imageData.data[i + 2] = chrominance;
+        }
+
+        return imageData;
+    }
+
 }
 
 class FilteredImage {
@@ -135,8 +158,19 @@ class FilteredImage {
     }
 
     // black and white
-    displayBW(threshold) {
+    displayBW(threshold = 128) {
+        const imageData = this.#imageDataHelper.getImageData_BW(threshold);
+        if (!imageData) {
+            setTimeout(() => {
+                this.displayBW();
+            }, 1000);
+            return;
+        }
 
+        this.#canvas.width = imageData.width;
+        this.#canvas.height = imageData.height;
+
+        this.#ctx.putImageData(imageData, 0, 0);
     }
 
 
@@ -144,14 +178,6 @@ class FilteredImage {
 }
 
 
-const img123 = new FilteredImage('../images/browser-gb45d4bd06_640.png');
-img123.displayGreyscale();
-
-// const canvas = document.createElement('canvas');
-// for (let i = 0; i < 9; i++) {
-
-// }
-
-// const img = new ImageData('../images/browser-gb45d4bd06_640.png');
-// console.log(img.getPixelData(5, 5));
-
+// const img123 = new FilteredImage('../images/browser-gb45d4bd06_640.png');
+const img123 = new FilteredImage('../images2/DSC02276a.jpg');
+img123.displayBW(100);
