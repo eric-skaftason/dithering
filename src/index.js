@@ -78,7 +78,7 @@ class ImageDataHelper {
         return imageData;
     }
 
-    getImageData_BW(threshold = 128) {
+    getImageData_BW(threshold_type = 128) {
         const imageData = this.getImageData_lum();
 
         if (!imageData) return;
@@ -86,8 +86,15 @@ class ImageDataHelper {
         // Iterate over each pixel
         for (let i = 0; i < imageData.data.length; i += 4) {
             // Since RGB values for greyscale images are equal, the R value can be used as the chrominance value
-
             let chrominance = imageData.data[i];
+            let threshold = 128;
+
+            // Determine random threshold if applicable
+            if (threshold_type === 'rand') {
+                threshold = Math.floor(Math.random() * 256);
+            } else if (typeof threshold_type === 'number') {
+                threshold = threshold_type
+            }
 
             chrominance >= threshold ? chrominance = 255 : chrominance = 0;
             
@@ -162,7 +169,7 @@ class FilteredImage {
         const imageData = this.#imageDataHelper.getImageData_BW(threshold);
         if (!imageData) {
             setTimeout(() => {
-                this.displayBW();
+                this.displayBW(threshold);
             }, 1000);
             return;
         }
@@ -180,4 +187,4 @@ class FilteredImage {
 
 // const img123 = new FilteredImage('../images/browser-gb45d4bd06_640.png');
 const img123 = new FilteredImage('../images2/DSC02276a.jpg');
-img123.displayBW(100);
+img123.displayBW('rand');
