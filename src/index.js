@@ -195,7 +195,7 @@ class FilteredImage {
 
     }
 
-    displayDithered_rand(min = 80, max = 180) {
+    displayDithered_rand(min = 0, max = 255) {
         const imageData = this.#imageDataHelper.getImageData_dithered(min, max);
         if (!imageData) {
             setTimeout(() => {
