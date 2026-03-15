@@ -149,7 +149,7 @@ class FilteredImage {
         document.body.append(this.#canvas);
 
         // Render image
-        this.displayGreyscale();
+        // this.displayGreyscale();
     }
 
     #displayImage(imageData) {        
@@ -209,14 +209,52 @@ class FilteredImage {
 
         this.#displayImage(imageData);
     }
-
-
-    
-
 }
 
+document.querySelector('#apply_filter').addEventListener('click', () => {
+    const img_input = document.querySelector('#img_input');
+    if (img_input.files.length === 0) {
+        alert('Please select an image.');
+        return;
+    }
 
-// const img123 = new FilteredImage('../images/browser-gb45d4bd06_640.png');
+    const img_url = URL.createObjectURL(img_input.files[0]);
 
-const img123 = new FilteredImage('../images2/DSC02276a.jpg');
-img123.displayDithered_rand(80, 180);
+    // Gets first instance of an input with anme "filters" that is checked
+    const filter_radio = document.querySelector('input[name="filters"]:checked');
+    if (filter_radio === null) {
+        alert('Please select a filter');
+        return;
+    }
+
+    const filter = filter_radio.getAttribute('value');
+
+    // Clear canvases
+    const canvases = document.querySelectorAll('canvas');
+    canvases.forEach(canvas => {
+        canvas.remove();
+    });
+
+
+    const filtered_image = new FilteredImage(img_url);
+    switch (filter) {
+        case 'og':
+            filtered_image.displayOriginal();
+            break;
+        case 'grey':
+            filtered_image.displayGreyscale();
+            break;
+        case 'bw':
+            let threshold = 128;
+            threshold = Number(prompt('Input threshold: 0 - 255 (inclusive)'));
+            filtered_image.displayBW(threshold);
+            break;
+        case 'dither_rand':
+            let lower = 0;
+            let upper = 0;
+            lower = Number(prompt('Input lower bound: 0 - 255 (inclusive)'));
+            upper = Number(prompt('Input upper bound: 0 - 255 (inclusive)'));
+            filtered_image.displayDithered_rand(lower, upper);
+            break;
+    }
+});

@@ -8,6 +8,25 @@
     <link rel="stylesheet" href="./index.css">
 </head>
 <body>
+    <h1>Image Filtering</h1>
+
+    <div class="menu">
+        <label for="image">Select a file:</label>
+        <input type="file" id="img_input" name="image">
+        
+        <div class="filters">
+            <input type="radio" id="og" name="filters" value="og">
+            <label for="og">Original</label><br>
+            <input type="radio" id="grey" name="filters" value="grey">
+            <label for="grey">Greyscale</label><br>
+            <input type="radio" id="bw" name="filters" value="bw">
+            <label for="bw">Black and white</label><br>
+            <input type="radio" id="dither_rand" name="filters" value="dither_rand">
+            <label for="bw">Dithered - rand</label><br>
+        </div>
+
+        <button id="apply_filter">Apply filter</button>
+    </div>
     
 
     <script src="./index.js"></script>
