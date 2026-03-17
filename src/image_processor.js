@@ -126,6 +126,32 @@ class ImageProcessor {
     }
 
     // One-Dimensional Error Diffusion Dithering
+    getImageData_errDiff(threshold) {
+        const imageData = this.getImageData_lum();
+        if (!imageData) return;
+
+        let offset = 0;
+
+        for (let i = 0; i < imageData.data.length; i += 4) {
+            const chrominance = imageData.data[i] + offset;
+            if (chrominance >= threshold) {
+                // white
+                imageData.data[i] = 255;
+                imageData.data[i + 1] = 255;
+                imageData.data[i + 2] = 255;
+
+                offset = chrominance - 255;
+            } else {
+                imageData.data[i] = 0;
+                imageData.data[i + 1] = 0;
+                imageData.data[i + 2] = 0;
+
+                offset = chrominance - 0;
+            }
+        }
+
+        return imageData;
+    }
 
 }
 

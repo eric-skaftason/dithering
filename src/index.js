@@ -80,6 +80,18 @@ class ImageRenderer {
 
         this.#displayImage(imageData);
     }
+
+    displayDithered_errDiff(threshold = 128) {
+        const imageData = this.#ImageProcessor.getImageData_errDiff(threshold);
+        if (!imageData) {
+            setTimeout(() => {
+                this.displayDithered_errDiff(threshold);
+            }, 1000);
+            return;
+        }
+
+        this.#displayImage(imageData);
+    }
 }
 
 document.querySelector('#apply_filter').addEventListener('click', () => {
@@ -116,16 +128,28 @@ document.querySelector('#apply_filter').addEventListener('click', () => {
             filtered_image.displayGreyscale();
             break;
         case 'bw':
-            let threshold = 128;
-            threshold = Number(prompt('Input threshold: 0 - 255 (inclusive)'));
-            filtered_image.displayBW(threshold);
+            {
+                let threshold = 128;
+                threshold = Number(prompt('Input threshold: 0 - 255 (inclusive)'));
+                filtered_image.displayBW(threshold);
+            }
             break;
         case 'dither_rand':
-            let lower = 0;
-            let upper = 0;
-            lower = Number(prompt('Input lower bound: 0 - 255 (inclusive)'));
-            upper = Number(prompt('Input upper bound: 0 - 255 (inclusive)'));
-            filtered_image.displayDithered_rand(lower, upper);
+            {
+                let lower = 0;
+                let upper = 0;
+                lower = Number(prompt('Input lower bound: 0 - 255 (inclusive)'));
+                upper = Number(prompt('Input upper bound: 0 - 255 (inclusive)'));
+                filtered_image.displayDithered_rand(lower, upper);
+            }
             break;
+        case 'err_diff':
+            {
+                let threshold = 128;
+                threshold = Number(prompt('Input threshold: 0 - 255 (inclusive)'));
+                filtered_image.displayDithered_errDiff(threshold);
+            }
+            break;
+
     }
 });
