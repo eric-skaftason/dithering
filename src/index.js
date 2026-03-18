@@ -17,10 +17,9 @@ class ImageRenderer {
         // Create canvas
         this.#canvas = document.createElement('canvas');
         this.#ctx = this.#canvas.getContext('2d');
+        this.#ctx.imageSmoothingEnabled = false;
         document.body.append(this.#canvas);
 
-        // Render image
-        // this.displayGreyscale();
     }
 
     #displayImage(imageData) {        
@@ -92,6 +91,18 @@ class ImageRenderer {
 
         this.#displayImage(imageData);
     }
+
+    displayDithered_FloydSteinberg() {
+        const imageData = this.#ImageProcessor.getImageData_FloydSteinberg();
+        if (!imageData) {
+            setTimeout(() => {
+                this.displayDithered_FloydSteinberg();
+            }, 1000);
+            return;
+        }
+
+        this.#displayImage(imageData);
+    }
 }
 
 document.querySelector('#apply_filter').addEventListener('click', () => {
@@ -148,6 +159,11 @@ document.querySelector('#apply_filter').addEventListener('click', () => {
                 let threshold = 128;
                 threshold = Number(prompt('Input threshold: 0 - 255 (inclusive)'));
                 filtered_image.displayDithered_errDiff(threshold);
+            }
+            break;
+        case 'floyd_steinberg':
+            {
+                filtered_image.displayDithered_FloydSteinberg();
             }
             break;
 

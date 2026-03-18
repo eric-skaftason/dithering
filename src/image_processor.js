@@ -12,12 +12,30 @@ class ImageProcessor {
         this.#initCanvas();
     }
 
+    #getPixelChrominance(imageData, pixelIndex) {
+        const arrIndex = pixelIndex * 4;
+
+        const chrominance = imageData.data[arrIndex];
+        
+        return chrominance;
+    }
+
+    #setPixelChrominance(imageData, pixelIndex, chrominance) {
+        // Ensure chrominance is an integer
+        chrominance = Math.round(chrominance);
+
+        imageData.data[pixelIndex * 4] = chrominance;
+        imageData.data[pixelIndex * 4 + 1] = chrominance;
+        imageData.data[pixelIndex * 4 + 2] = chrominance;
+    }
+
     #initCanvas() {
         const img = new Image();
         img.src = this.#src;
 
         this.#canvas = document.createElement('canvas');
         this.#ctx = this.#canvas.getContext('2d');
+        this.#ctx.imageSmoothingEnabled = false;
 
         img.onload = () => {
             this.#canvas.width = img.width;
@@ -126,7 +144,7 @@ class ImageProcessor {
     }
 
     // One-Dimensional Error Diffusion Dithering
-    getImageData_errDiff(threshold) {
+    getImageData_errDiff(threshold = 128) {
         const imageData = this.getImageData_lum();
         if (!imageData) return;
 
@@ -148,6 +166,62 @@ class ImageProcessor {
 
                 offset = chrominance - 0;
             }
+        }
+
+        return imageData;
+    }
+
+    getImageData_FloydSteinberg() {
+        const imageData = this.getImageData_lum();
+        if (!imageData) return;
+
+        const width = imageData.width;
+        const height = imageData.height;
+
+        // i refers to the pixel # -- not the actual index in the array
+        for (let i = 0; i < width * height; i ++) {
+            const chrominance = this.#getPixelChrominance(imageData, i);
+            const quantizedChrominance = (() => {
+                if (chrominance >= 128) return 255;
+                return 0;
+            })();
+
+            this.#setPixelChrominance(imageData, i, quantizedChrominance);
+
+            // err = og value - quantized value
+            const quantizationError = chrominance - quantizedChrominance;
+
+            // 100% of error is propagated
+            
+            // 7/16 to right
+            const r_pixelIndex = i + 1;
+            if (i % width !== 0 && r_pixelIndex < width * height) { // last col or beyond grid
+                const r_chrominance = this.#getPixelChrominance(imageData, r_pixelIndex) + quantizationError * 7/16;
+                this.#setPixelChrominance(imageData, r_pixelIndex, r_chrominance);
+            }
+            
+
+            // 3/16 to bottom-left
+            const bl_pixelIndex = i + width - 1;
+            if (bl_pixelIndex % width !== 0) {
+                const bl_chrominance = this.#getPixelChrominance(imageData, bl_pixelIndex) + quantizationError * 3/16;
+                this.#setPixelChrominance(imageData, bl_pixelIndex, bl_chrominance);
+            }
+            
+            // 5/16 to bottom
+            const b_pixelIndex = i + width;
+            if (r_pixelIndex < width * height) {
+                const b_chrominance = this.#getPixelChrominance(imageData, b_pixelIndex) + quantizationError * 5/16;
+                this.#setPixelChrominance(imageData, b_pixelIndex, b_chrominance);
+            }
+
+            // 1/16 to bottom-right
+            const br_pixelIndex = i + width + 1;
+            if (i % width !== 0 && r_pixelIndex < width * height) {
+                const br_chrominance = this.#getPixelChrominance(imageData, br_pixelIndex) + quantizationError * 1/16;
+                this.#setPixelChrominance(imageData, br_pixelIndex, br_chrominance);
+            }
+
         }
 
         return imageData;
