@@ -1,4 +1,4 @@
-import { ImageProcessor } from "./image_processor.js";
+import { ImageProcessor } from "./ImageProcessor.js";
 
 class ImageRenderer {
     #src;
@@ -15,93 +15,94 @@ class ImageRenderer {
         this.#ImageProcessor = new ImageProcessor(src);
 
         // Create canvas
-        this.#canvas = document.createElement('canvas');
-        this.#ctx = this.#canvas.getContext('2d');
-        this.#ctx.imageSmoothingEnabled = false;
-        document.body.append(this.#canvas);
+        // this.#canvas = document.createElement('canvas');
+        // this.#ctx = this.#canvas.getContext('2d');
+        // this.#ctx.imageSmoothingEnabled = false;
+        // document.body.append(this.#canvas);
 
     }
 
-    #displayImage(imageData) {        
-        this.#canvas.width = imageData.width;
-        this.#canvas.height = imageData.height;
+    #displayImage(canvas, imageData) {        
+        canvas.width = imageData.width;
+        canvas.height = imageData.height;
 
-        this.#ctx.putImageData(imageData, 0, 0);
+        const ctx = canvas.getContext('2d');
+        ctx.putImageData(imageData, 0, 0);
     }
 
-    displayOriginal() {
+    displayOriginal(canvas) {
         const imageData = this.#ImageProcessor.getImageData();
         if (!imageData) {
             setTimeout(() => {
-                this.displayOriginal();
+                this.displayOriginal(canvas);
             }, 1000);
             return;
         }
         
-        this.#displayImage(imageData);
+        this.#displayImage(canvas, imageData);
     }
     
-    displayGreyscale() {
+    displayGreyscale(canvas) {
         const imageData = this.#ImageProcessor.getImageData_lum();
         if (!imageData) {
             setTimeout(() => {
-                this.displayGreyscale();
+                this.displayGreyscale(canvas);
             }, 1000);
             return;
         }
 
-       this.#displayImage(imageData);
+       this.#displayImage(canvas, imageData);
 
     }
 
     // black and white
-    displayBW(threshold = 128) {
+    displayBW(canvas, threshold = 128) {
         const imageData = this.#ImageProcessor.getImageData_BW(threshold);
         if (!imageData) {
             setTimeout(() => {
-                this.displayBW(threshold);
+                this.displayBW(canvas, threshold);
             }, 1000);
             return;
         }
 
-        this.#displayImage(imageData);
+        this.#displayImage(canvas, imageData);
 
     }
 
-    displayDithered_rand(min = 0, max = 255) {
+    displayDithered_rand(canvas, min = 0, max = 255) {
         const imageData = this.#ImageProcessor.getImageData_dithered(min, max);
         if (!imageData) {
             setTimeout(() => {
-                this.displayDithered_rand(min, max);
+                this.displayDithered_rand(canvas, min, max);
             }, 1000);
             return;
         }
 
-        this.#displayImage(imageData);
+        this.#displayImage(canvas, imageData);
     }
 
-    displayDithered_errDiff(threshold = 128) {
+    displayDithered_errDiff(canvas, threshold = 128) {
         const imageData = this.#ImageProcessor.getImageData_errDiff(threshold);
         if (!imageData) {
             setTimeout(() => {
-                this.displayDithered_errDiff(threshold);
+                this.displayDithered_errDiff(canvas, threshold);
             }, 1000);
             return;
         }
 
-        this.#displayImage(imageData);
+        this.#displayImage(canvas, imageData);
     }
 
-    displayDithered_FloydSteinberg() {
+    displayDithered_FloydSteinberg(canvas) {
         const imageData = this.#ImageProcessor.getImageData_FloydSteinberg();
         if (!imageData) {
             setTimeout(() => {
-                this.displayDithered_FloydSteinberg();
+                this.displayDithered_FloydSteinberg(canvas);
             }, 1000);
             return;
         }
 
-        this.#displayImage(imageData);
+        this.#displayImage(canvas, imageData);
     }
 }
 
@@ -171,3 +172,5 @@ document.querySelector('#apply_filter').addEventListener('click', () => {
     }
 });
 */
+
+export { ImageRenderer };
