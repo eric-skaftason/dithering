@@ -6,6 +6,8 @@
     <title>Document</title>
 
     <link rel="stylesheet" href="./src/index.css">
+
+    <script src="./lib/dropdown/dropdown.js"></script>
 </head>
 <body>
 
@@ -19,8 +21,10 @@
         <div class="demo_wrapper">
             <canvas class="demo"></canvas>
             <div class="demo_menu">
-                <button>Select Image</button>
-                <button>Select Filter</button>
+                <button id="sel_img">Select Image</button>
+                <input type="file" id="img_input" name="image" hidden>
+
+                <button id="sel_filter">Select Filter</button>
             </div>
         </div>
     </div>

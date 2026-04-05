@@ -55,6 +55,10 @@ button:hover {
 
 /* Demo */
 
+.demo_wrapper {
+    position: relative;
+}
+
 .demo_wrapper canvas.demo {
     width: 564px;
     height: 374px;
