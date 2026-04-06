@@ -24,6 +24,8 @@ main {
     width: 80%;
 }
 
+/* Universal Styling Classes */
+
 button {
     border: none;
     outline: none;
@@ -34,10 +36,24 @@ button:hover {
     background-color: rgb(64, 64, 64);
 }
 
-/* Universal Styling Classes */
 .hidden {
     display: none !important;
 }
+
+/* Page */
+.title {
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    margin-top: 0;
+}
+
+.heading {
+    margin: 10px;
+}
+
+
 
 /* Demo */
 .demo_container {
@@ -46,13 +62,17 @@ button:hover {
     background-color: rgb(128, 128, 128);
 
     /* Set default width */
-    width: 564px;
+    width: 100%;
 
     min-width: 300px;
     min-height: 0;
 
     max-width: 1000px;
     max-height: 1000px;
+
+    margin-top: 40px;
+    margin-bottom: 40px;
+
 }
 
 /* Window control bar */
@@ -60,12 +80,26 @@ button:hover {
     width: 100%;
     height: 40px;
     display: flex;
-    flex-direction: row-reverse;
 }
 
 .window_controls button {
     height: 40px;
     width: 40px;
+}
+
+#demo_title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin: 0;
+
+    width: 100%;
+    height: 100%;
+    
+    font-weight: bold;
+    font-size: 18px;
+    color: black;
 }
 
 /* Demo */
@@ -84,7 +118,7 @@ button:hover {
 
 .demo_wrapper canvas.demo {
     /* Set initial dimensions */
-    width: 564px;
+    width: 100%;
     height: 374px;
 
     margin: 0;

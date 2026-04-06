@@ -5,7 +5,7 @@ const demo_wrapper = document.querySelector('.demo_wrapper');
 const demo_canvas = document.querySelector('canvas.demo');
 
 // Minimise button
-document.querySelector('.minimise').addEventListener('click', () => {
+document.querySelector('#minimise').addEventListener('click', () => {
     demo_wrapper.classList.toggle('hidden');
 });
 
