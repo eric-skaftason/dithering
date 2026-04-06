@@ -7,6 +7,7 @@
 body {
     margin: 0;
     padding: 0;
+    padding-bottom: 50px;
     width: 100%;
     
     display: flex;
@@ -53,6 +54,32 @@ button:hover {
     margin: 10px;
 }
 
+
+.image_container {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+
+    width: 564px;
+}
+
+.image_container img {
+    height: auto;
+    display: block;
+}
+
+.image_container p {
+    font-style: italic;
+    font-size: 14px;
+    margin: 10px;
+    width: 100%;
+}
+
+.image_collection {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
 
 
 /* Demo */
