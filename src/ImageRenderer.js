@@ -1,25 +1,25 @@
 import { ImageProcessor } from "./ImageProcessor.js";
 
 class ImageRenderer {
-    #src;
-    #canvas;
-    #ctx;
-
     #ImageProcessor;
 
     constructor(src) {
-        // Define source
-        this.#src = src;
-
         // Initialise ImageProcessor
         this.#ImageProcessor = new ImageProcessor(src);
 
-        // Create canvas
-        // this.#canvas = document.createElement('canvas');
-        // this.#ctx = this.#canvas.getContext('2d');
-        // this.#ctx.imageSmoothingEnabled = false;
-        // document.body.append(this.#canvas);
+        // this.#ImageProcessor.ready is a promise object
+        // this.ready is a reference to this.#ImageProcessor.ready
+        // calling await this.ready returns a what the promise resolves to
+        // calling this.ready returns the promise object
+        this.ready = this.#ImageProcessor.ready;
+    }
 
+    async getDimensions() {
+        await this.ready;
+
+        const imageData = this.#ImageProcessor.getImageData();
+
+        return {width: imageData.width, height: imageData.height};
     }
 
     #displayImage(canvas, imageData) {        
@@ -30,15 +30,22 @@ class ImageRenderer {
         ctx.putImageData(imageData, 0, 0);
     }
 
-    displayOriginal(canvas) {
-        const imageData = this.#ImageProcessor.getImageData();
-        if (!imageData) {
-            setTimeout(() => {
-                this.displayOriginal(canvas);
-            }, 1000);
-            return;
-        }
+    // displayOriginal(canvas) {
+    //     const imageData = this.#ImageProcessor.getImageData();
+    //     if (!imageData) {
+    //         setTimeout(() => {
+    //             this.displayOriginal(canvas);
+    //         }, 1000);
+    //         return;
+    //     }
         
+    //     this.#displayImage(canvas, imageData);
+    // }
+
+    async displayOriginal(canvas) {
+        await this.ready;
+        
+        const imageData = this.#ImageProcessor.getImageData();        
         this.#displayImage(canvas, imageData);
     }
     

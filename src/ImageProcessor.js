@@ -8,8 +8,7 @@ class ImageProcessor {
 
     constructor(src) {
         this.#src = src;
-
-        this.#initCanvas();
+        this.#initImage();
     }
 
     #getPixelChrominance(imageData, pixelIndex) {
@@ -29,22 +28,31 @@ class ImageProcessor {
         imageData.data[pixelIndex * 4 + 2] = chrominance;
     }
 
-    #initCanvas() {
+    #initImage() {
         const img = new Image();
         img.src = this.#src;
+
+        this.ready = new Promise((resolve) => {
+            img.onload = () => {
+                resolve(true);
+                this.#initCanvas(img);
+            };
+        });
+    }
+
+    async #initCanvas(img) {
+        await this.ready;
 
         this.#canvas = document.createElement('canvas');
         this.#ctx = this.#canvas.getContext('2d');
         this.#ctx.imageSmoothingEnabled = false;
+        
+        this.#canvas.width = img.width;
+        this.#canvas.height = img.height;
 
-        img.onload = () => {
-            this.#canvas.width = img.width;
-            this.#canvas.height = img.height;
+        this.#ctx.drawImage(img, 0, 0);
 
-            this.#ctx.drawImage(img, 0, 0);
-
-            this.#imageData = this.#ctx.getImageData(0, 0, img.width, img.height);
-        };
+        this.#imageData = this.#ctx.getImageData(0, 0, img.width, img.height);
     }
 
     getImageData() {

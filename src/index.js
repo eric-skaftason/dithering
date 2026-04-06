@@ -1,11 +1,12 @@
 import { ImageRenderer } from "./ImageRenderer.js";
+import params from './params.js';
 
 const demo_wrapper = document.querySelector('.demo_wrapper');
 const demo_canvas = document.querySelector('canvas.demo');
 
 // Minimise button
 document.querySelector('.minimise').addEventListener('click', () => {
-    demo_wrapper.toggleAttribute('hidden');
+    demo_wrapper.classList.toggle('hidden');
 });
 
 function getImageInfo() {
@@ -20,6 +21,7 @@ const file_input = document.querySelector('#img_input');
 
 image_selector.addEventListener('click', () => {
     file_input.click();
+    image_selector.innerText = 'Select Image';
 });
 file_input.addEventListener('change', () => {
     image_selector.innerText = getImageInfo().name || image_selector.innerText;
@@ -60,6 +62,7 @@ function createFilterMenu() {
 
         ele.addEventListener('click', () => {
             applyFilter(list_elements[i][1]);
+            filter_menu.remove();
         });
         
         filter_menu.appendChild(ele);
@@ -68,9 +71,17 @@ function createFilterMenu() {
     demo_wrapper.append(filter_menu);
 }
 
+// Change demo dimensions
+function applyDimensions(width, height) {
+    demo_canvas.width = width;
+    demo_canvas.height = height;
+
+    demo_canvas.style.width = `${width}px`;
+    demo_canvas.style.height = `${height}px`;
+}
 
 // Apply filter
-function applyFilter(filter) {
+async function applyFilter(filter) {
     const img_input = document.querySelector('#img_input');
     if (img_input.files.length === 0) {
         alert('Please select an image.');
@@ -79,14 +90,21 @@ function applyFilter(filter) {
 
     const img_url = URL.createObjectURL(img_input.files[0]);
 
-    // Clear canvases
-    const canvases = document.querySelectorAll('canvas');
-    canvases.forEach(canvas => {
-        // canvas.remove();
-    });
-
-
     const filtered_image = new ImageRenderer(img_url);
+    await filtered_image.ready;
+
+    const dimensions = await filtered_image.getDimensions();
+
+    if (
+        dimensions.width > params.canvas.max_width ||
+        dimensions.height > params.canvas.max_height
+    ) {
+        alert('Image too large. Please select an image with max dimensions 1000 x 1000 pixels.');
+        return;
+    } else {
+        applyDimensions(dimensions.width, dimensions.height);
+    }
+
     switch (filter) {
         case 'og':
             filtered_image.displayOriginal(demo_canvas);
