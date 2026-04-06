@@ -31,7 +31,7 @@
             </div>
         </div>
     </div>
-    <h2 class="heading">Quantisation</h2>
+    <h2 class="heading">-- Quantisation --</h2>
 
     <p>
         How can an image with rich details be rendered when hardware/software limitations restrict the number of colours that can be displayed?
@@ -52,7 +52,7 @@
         <br><br>
         It is important to note that greyscale is not the same as black-and-white.
         While greyscale images support pixels of varying shades of grey, black-and-white rendering is binary, meaning pixels are restricted to being either fully black or fully white.
-        All futher examples will look at rendering an image using solely black and white pixels.
+        All further examples will look at rendering an image using solely black and white pixels.
         Thus, the image is converted to greyscale before any algorithm to convert to black-and-white is applied.
 
         <div class="image_collection">
@@ -98,7 +98,7 @@
 
     <h2 class="heading">-- Dithering --</h2>
     <p>
-        The follwing methods are different ways of dithering.
+        The following methods are different ways of dithering.
         Dithering is a technique that allows for a greater number shades to be simulated than the display system can actually output.
     </p>
 
@@ -109,7 +109,7 @@
         This randomness creates better "greys" i.e. shades can be rendered more accurately.
 
         It works because a grey pixel has a possibility of turning black or white during quantisation.
-        If a pixel has a higher chrominance value (i.e. the pixel is more white), it has a greater chance of being mapped to white; the same logic applies to darker greys.
+        If a pixel has a higher luminance value (i.e. the pixel is more white), it has a higher probability of being mapped to white; the same logic applies to darker greys.
         
         <br><br>
         A shortcoming of this dithering method is that the resulting image is often very noisy, reducing clarity of sharp details.
@@ -121,20 +121,60 @@
         <div class="image_collection">
             <div class="image_container">
                 <img src="./images/rand0-255.png" alt="">
-                <p>Random Dithering</p>
+                <p>Random dithering</p>
             </div>
             <div class="image_container">
                 <img src="./images/rand50-200.png" alt="">
-                <p>Random Dithering with lower & upper bounds of 50 and 200, respectively</p>
+                <p>Random dithering with lower & upper bounds of 50 and 200, respectively</p>
             </div>
         </div>
+    </p>
 
+    <h2 class="heading">3. 1-Dimensional Error Diffusion</h2>
+    <p>
+        1D Error diffusion works by keeping track of the error introduced by quantisation.
+        Moving from the top-left of the image, the first pixel is set either black or white using a threshold.
+        And resulting error is propagated over to the next pixel, adding to pixel's luminance value.
+        Then, the pixel is quantised to black or white using the adjusted luminance
+        This process repeats for every pixel.
+
+        <br><br>
+        This method of dithering can leave noticeable artifacts especially in the vertical direction since the quantisation error is only distributed horizontally.
+
+        <div class="image_container">
+            <img src="./images/1d_err_diff.png" alt="">
+            <p>1D error diffusion (threshold = 128)</p>
+        </div>
+    </p>
+
+    <h2 class="heading">4. Floyd-Steinberg Dithering</h2>
+    <p>
+        This dithering algorithm was created by Robert W. Floyd and Louis Steinberg.
+        This algorithm uses error diffusion as opposed to random noise, but in both the vertical and horizontal directions.
+        Instead of diffusing the error solely to the next pixel, it is distributed over 4 neighbours in specific quantities.
+        <ul>
+            <li>7/16 - right pixel</li>
+            <li>5/16 - bottom pixel</li>
+            <li>3/16 - bottom-left pixel</li>
+            <li>1/16 - bottom-right pixel</li>
+        </ul>
+
+        <div class="image_container">
+            <img src="./images/floyd_steinberg.png" alt="">
+            <p>Floyd-Steinberg dithering</p>
+        </div>
+    </p>
+
+    <h2 class="heading">-- Conclusion --</h2>
+    <p>
+        Dithering is a powerful tool that can allow for the rendering of smooth gradients when limited to only a few colours or black and white.
+
+        Consider using the demo software to apply these filters to your own images.
     </p>
 
 </main>
     
 
     <script type="module" src="./src/index.js"></script>
-    <!-- <script type="module" src="./src/demo.js"></script> -->
 </body>
 </html>

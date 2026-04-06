@@ -203,29 +203,28 @@ class ImageProcessor {
             
             // 7/16 to right
             const r_pixelIndex = i + 1;
-            if (i % width !== 0 && r_pixelIndex < width * height) { // last col or beyond grid
+            if ((i % width) !== width - 1 && r_pixelIndex < width * height) {
                 const r_chrominance = this.#getPixelChrominance(imageData, r_pixelIndex) + quantizationError * 7/16;
                 this.#setPixelChrominance(imageData, r_pixelIndex, r_chrominance);
             }
-            
 
             // 3/16 to bottom-left
             const bl_pixelIndex = i + width - 1;
-            if (bl_pixelIndex % width !== 0) {
+            if ((i % width) !== 0 && bl_pixelIndex < width * height) {
                 const bl_chrominance = this.#getPixelChrominance(imageData, bl_pixelIndex) + quantizationError * 3/16;
                 this.#setPixelChrominance(imageData, bl_pixelIndex, bl_chrominance);
             }
-            
+
             // 5/16 to bottom
             const b_pixelIndex = i + width;
-            if (r_pixelIndex < width * height) {
+            if (b_pixelIndex < width * height) {
                 const b_chrominance = this.#getPixelChrominance(imageData, b_pixelIndex) + quantizationError * 5/16;
                 this.#setPixelChrominance(imageData, b_pixelIndex, b_chrominance);
             }
 
             // 1/16 to bottom-right
             const br_pixelIndex = i + width + 1;
-            if (i % width !== 0 && r_pixelIndex < width * height) {
+            if ((i % width) !== width - 1 && br_pixelIndex < width * height) {
                 const br_chrominance = this.#getPixelChrominance(imageData, br_pixelIndex) + quantizationError * 1/16;
                 this.#setPixelChrominance(imageData, br_pixelIndex, br_chrominance);
             }
