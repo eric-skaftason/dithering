@@ -143,3 +143,26 @@ async function applyFilter(filter) {
     }
 
 }
+
+
+// Help
+document.querySelector('#help').addEventListener('click', toggleDemoHelpMenu);
+
+function toggleDemoHelpMenu() {
+    // document.createElement('')
+
+    `
+        <modal-menu>
+        <menu-controls>
+            <close-menu></close-menu>
+        </menu-controls>
+
+        <menu-header>
+            <menu-title></menu-title>
+            <menu-text>Permission menu</menu-text>
+        </menu-header>
+        
+        <menu-body id="menu-body"></menu-body>
+    </modal-menu>
+    `
+}
