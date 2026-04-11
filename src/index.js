@@ -150,17 +150,30 @@ document.querySelector('#help').addEventListener('click', toggleDemoHelpMenu);
 
 function toggleDemoHelpMenu() {
     const modal_menu = document.querySelector('.modal_menu');
-    const modal = document.querySelector('.modal');
 
     if (modal_menu === null) {
         createDemoHelpMenu();
     } else {
-        modal_menu.remove();
-        modal.remove();
+        closeDemoHelpMenu();
     }
 }
 
+function closeDemoHelpMenu() {
+    const modal_menu = document.querySelector('.modal_menu');
+    const modal = document.querySelector('.modal');
+
+    document.body.style.overflow = 'auto';
+
+    modal_menu.remove();
+    modal.remove();
+}
+
 function createDemoHelpMenu() {
+    window.scrollTo({
+        top: 0,
+    });
+
+
     // Modal menu
     const modal_menu = document.createElement('div');
     modal_menu.classList.add('modal_menu');
@@ -169,29 +182,48 @@ function createDemoHelpMenu() {
     const modal = document.createElement('div');
     modal.classList.add('modal');
 
+    document.body.style.overflow = 'hidden';
+
     // Window controls
     const modal_window_controls = document.createElement('div');
     modal_window_controls.classList.add('modal_window_controls');
+
+    const modal_title = document.createElement('div');
+    modal_title.setAttribute('id', 'modal_title');
+    modal_title.innerText = 'Demo Instructions';
     
+    const close_modal = document.createElement('button');
+    close_modal.setAttribute('id', 'close_modal');
+    close_modal.innerText = 'x';
+
+    close_modal.addEventListener('click', () => {
+        closeDemoHelpMenu();
+    });
+
+    modal_window_controls.append(modal_title);
+    modal_window_controls.append(close_modal);
+
     // Modal menu body
     const modal_body = document.createElement('div');
     modal_body.classList.add('modal_body');
 
     modal_body.innerHTML = `
-    <p>
-        <strong style="text-align: "centre"">Instructions</strong>
+        <p><strong style="text-align: "centre"">Instructions</strong></p>
 
-        Hello 123
-    
-    </p>
+        <ol>
+            <li>CLick 'Select Image' to select an image from your computer</li>
+            <li>Click 'Select Filter' and select a filter from the menu to apply</li>
+        </ol>
 
-    `
+        <p>Note: the image must be equal to or less than 1000 x 1000 pixels in size.</p>
     
+    `;
     
     
     modal_menu.append(modal_window_controls);
-    document.body.append(modal_menu);
+    modal_menu.append(modal_body);
 
+    document.body.append(modal_menu);
     document.body.append(modal);
     
 }
