@@ -149,20 +149,49 @@ async function applyFilter(filter) {
 document.querySelector('#help').addEventListener('click', toggleDemoHelpMenu);
 
 function toggleDemoHelpMenu() {
-    // document.createElement('')
+    const modal_menu = document.querySelector('.modal_menu');
+    const modal = document.querySelector('.modal');
+
+    if (modal_menu === null) {
+        createDemoHelpMenu();
+    } else {
+        modal_menu.remove();
+        modal.remove();
+    }
+}
+
+function createDemoHelpMenu() {
+    // Modal menu
+    const modal_menu = document.createElement('div');
+    modal_menu.classList.add('modal_menu');
+
+    // Modal element
+    const modal = document.createElement('div');
+    modal.classList.add('modal');
+
+    // Window controls
+    const modal_window_controls = document.createElement('div');
+    modal_window_controls.classList.add('modal_window_controls');
+    
+    // Modal menu body
+    const modal_body = document.createElement('div');
+    modal_body.classList.add('modal_body');
+
+    modal_body.innerHTML = `
+    <p>
+        <strong style="text-align: "centre"">Instructions</strong>
+
+        Hello 123
+    
+    </p>
 
     `
-        <modal-menu>
-        <menu-controls>
-            <close-menu></close-menu>
-        </menu-controls>
+    
+    
+    
+    modal_menu.append(modal_window_controls);
+    document.body.append(modal_menu);
 
-        <menu-header>
-            <menu-title></menu-title>
-            <menu-text>Permission menu</menu-text>
-        </menu-header>
-        
-        <menu-body id="menu-body"></menu-body>
-    </modal-menu>
-    `
+    document.body.append(modal);
+    
 }
